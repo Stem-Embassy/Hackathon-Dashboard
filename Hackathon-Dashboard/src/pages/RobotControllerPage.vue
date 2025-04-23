@@ -60,15 +60,24 @@
 
     <v-row class="bottom-row">
       <v-col cols="12" md="4" class="bottom-component">
+        <div class="component-title">Controls</div>
+        <div class="component-placeholder">
+          <KeyPressedComponent @controller-data="receivecontrollerData" />
+        </div>
+      </v-col>
+
+      <v-col cols="12" md="4" class="bottom-component">
+        <div class="component-title">Servo Controls</div>
+        <div class="component-placeholder">
+          <servo-component @servo-data="receivedServoData" />
+        </div>
+      </v-col>
+``
+      <v-col cols="12" md="4" class="bottom-component">
         <div class="component-title">Robot distance</div>
         <div class="component-placeholder"><CurrentDistance /></div>
       </v-col>
-      <v-col cols="12" md="4" class="bottom-component">
-        <div class="component-title">Controls</div>
-        <div class="component-placeholder">
-          <KeyPressedComponent @data-sent="receivecontrollerData" />
-        </div>
-      </v-col>
+
       <v-col cols="12" md="4" class="bottom-component">
         <div class="component-title">Currently viewed color</div>
         <div class="component-placeholder"><CurrentlyViewedColor /></div>
@@ -113,11 +122,32 @@
 <script setup>
 import { ref, computed, onBeforeUnmount } from "vue";
 
+const jsonData = ref({
+  "w": false,
+  "a": false,
+  "s": false,
+  "d": false,
+  "servo": 90
+})
+
 // Handle WASD Data
-const receivecontrollerData = (data) => {
-  console.log("Data received from child:", data.value);
+const receivecontrollerData = (controllerData) => {
+  console.log("Data received from child:", controllerData.value);
   // const jsonObject = JSON.parse(data.value);
-  websocket.send(JSON.stringify(data.value));
+  jsonData.value["w"] = controllerData.value["w"];;
+  jsonData.value["a"] = controllerData.value["a"];
+  jsonData.value["s"] = controllerData.value["s"];
+  jsonData.value["d"] = controllerData.value["d"];
+
+  websocket.send(JSON.stringify(jsonData.value));
+  addMessage("Sending: " +JSON.stringify(jsonData.value));
+};
+
+const receivedServoData = (servoData) => {
+  jsonData.value["servo"] = servoData;
+  console.log("Data received from child:", servoData);
+  websocket.send(JSON.stringify(jsonData.value));
+  addMessage("Sending: " +JSON.stringify(jsonData.value));
 };
 
 const ipAddress = ref("ws://localhost:8080/ws");
@@ -140,6 +170,11 @@ const connectionStatus = computed(() => {
   if (isConnecting.value) return "Connecting...";
   if (connectionError.value) return connectionError.value;
   return "Disconnected";
+});
+
+const messagesReversedLimited = computed(() => {
+  // Return the last 5 messages in reverse order (newest first)
+  return [...messages.value].reverse().slice(0, 5);
 });
 
 // Methods
@@ -207,6 +242,7 @@ function toggleConnection() {
 function addMessage(content) {
   const now = new Date();
   const timestamp = now.toLocaleTimeString();
+  console.log(messages.value);
 
   // Try to format as JSON if it's valid JSON
   let formattedContent = content;

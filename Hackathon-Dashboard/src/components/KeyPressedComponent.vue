@@ -15,7 +15,7 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 
 const keys = ["w", "a", "s", "d"];
-const emit = defineEmits(["data-sent"]);
+const emit = defineEmits(["controller-data"]);
 
 const pressedKeys = ref({
   w: false,
@@ -29,7 +29,7 @@ const handleKeyDown = (event) => {
     if (pressedKeys.value[event.key.toLowerCase()] != true) {
       pressedKeys.value[event.key.toLowerCase()] = true;
       handleOutput(event.key.toLowerCase());
-      emit("data-sent", pressedKeys);
+      emit("controller-data", pressedKeys);
     }
   }
 };
@@ -37,7 +37,7 @@ const handleKeyDown = (event) => {
 const handleKeyUp = (event) => {
   if (keys.includes(event.key.toLowerCase())) {
     pressedKeys.value[event.key.toLowerCase()] = false;
-    emit("data-sent", pressedKeys);
+    emit("controller-data", pressedKeys);
   }
 };
 
