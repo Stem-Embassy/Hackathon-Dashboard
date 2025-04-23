@@ -1,5 +1,5 @@
 <template>
-  <div class="distance-display">
+  <div class="distance-display distance-sensor">
     <p>Distance: {{ distance }} cm</p>
   </div>
 </template>
@@ -7,23 +7,23 @@
 <script>
 export default {
   data() {
-    return {
-      distance: this.getRandomDistance(),
-    };
+    // return {
+    //   distance: this.getRandomDistance(),
+    // };
   },
   mounted() {
     // Change the distance every 5 seconds
-    this.distanceInterval = setInterval(() => {
-      this.distance = this.getRandomDistance();
-    }, 5000);
+    // this.distanceInterval = setInterval(() => {
+    //   this.distance = this.getRandomDistance();
+    // }, 5000);
   },
   beforeUnmount() {
-    clearInterval(this.distanceInterval);
+    // clearInterval(this.distanceInterval);
   },
   methods: {
-    getRandomDistance() {
-      return Math.floor(Math.random() * 500) + 1;
-    },
+    // getRandomDistance() {
+    //   return Math.floor(Math.random() * 500) + 1;
+    // },
   },
 };
 </script>
