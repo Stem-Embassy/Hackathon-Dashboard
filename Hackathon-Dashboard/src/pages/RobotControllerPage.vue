@@ -185,6 +185,19 @@ function connect() {
 
     websocket = new WebSocket(ipAddress.value);
 
+    websocket.onmessage = (event)=>{
+    try{
+    const data = JSON.parse(event.data);
+    if(data.blue !== undefined && data.clear !== undefined && data.red !== undefined && data.green != undefined){
+    addMessage(event.data)
+    document.querySelector(".color-sensor").style.backgroundColor = `rgb(${data.red},${data.green},${data.blue})`
+    document.querySelector(".distance-sensor").innerHTML = `<p>Distance: ${ data.distance } cm</p>`
+    }
+
+
+    }catch(error){
+    }
+    }
     websocket.onopen = () => {
       isConnected.value = true;
       isConnecting.value = false;
