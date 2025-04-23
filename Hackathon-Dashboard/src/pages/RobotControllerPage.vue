@@ -61,7 +61,7 @@
     <v-row class="bottom-row">
       <v-col cols="12" md="4" class="bottom-component">
         <div class="component-title">Robot distance</div>
-        <div class="component-placeholder"><CurrentDistance/></div>
+        <div class="component-placeholder"><CurrentDistance /></div>
       </v-col>
       <v-col cols="12" md="4" class="bottom-component">
         <div class="component-title">Controls</div>
