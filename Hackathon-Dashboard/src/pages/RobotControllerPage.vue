@@ -61,7 +61,7 @@
     <v-row class="bottom-row">
       <v-col cols="12" md="4" class="bottom-component">
         <div class="component-title">Robot distance</div>
-        <div class="component-placeholder"><CurrentDistance /></div>
+        <div class="component-placeholder"><CurrentDistance/></div>
       </v-col>
       <v-col cols="12" md="4" class="bottom-component">
         <div class="component-title">Controls</div>
@@ -202,6 +202,15 @@ function connect() {
           document.querySelector(
             ".color-sensor"
           ).style.backgroundColor = `rgb(${data.red}, ${data.green}, ${data.blue})`;
+        }
+
+        if(data.distance !== undefined) {
+          // Only add distance messages to the display
+          addMessage(event.data);
+          // Update background color based on RGB values
+          document.querySelector(
+            ".distance-display"
+          ).innerHTML = `<p>Distance: ${ data.distance } cm</p>`;
         }
       } catch (error) {
         console.error("Error parsing message:", error);
