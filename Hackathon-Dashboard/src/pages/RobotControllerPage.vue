@@ -63,6 +63,7 @@
         <div class="component-title">Robot distance</div>
         <div class="component-placeholder"><CurrentDistance /></div>
       </v-col>
+
       <v-col cols="12" md="4" class="bottom-component">
         <div class="component-title">Controls</div>
         <div class="component-placeholder">
@@ -71,7 +72,7 @@
       </v-col>
       <v-col cols="12" md="4" class="bottom-component">
         <div class="component-title">Currently viewed color</div>
-        <div class="component-placeholder"><CurrentlyViewedColor class="color-sensor" /></div>
+        <div class="component-placeholder"><CurrentlyViewedColor /></div>
       </v-col>
     </v-row>
 
@@ -128,11 +129,6 @@ const messages = ref([]);
 let websocket = null;
 
 // Computed properties
-const messagesReversedLimited = computed(() => {
-  // Return the last 5 messages in reverse order (newest first)
-  return [...messages.value].reverse().slice(0, 5);
-});
-
 const getStatusColor = computed(() => {
   if (isConnected.value) return "success";
   if (isConnecting.value) return "warning";
@@ -184,37 +180,6 @@ function connect() {
 
       // WebSocket error events don't contain direct error messages
       addMessage(`CONNECTION ERROR: Communication failure detected`);
-    };
-
-    websocket.onmessage = (event) => {
-      console.log("Message received:", event.data);
-      try {
-        const data = JSON.parse(event.data);
-        if (
-          data.blue !== undefined &&
-          data.clear !== undefined &&
-          data.red !== undefined &&
-          data.green !== undefined
-        ) {
-          // Only add color sensor messages to the display
-          addMessage(event.data);
-          // Update background color based on RGB values
-          document.querySelector(
-            ".color-sensor"
-          ).style.backgroundColor = `rgb(${data.red}, ${data.green}, ${data.blue})`;
-        }
-
-        if(data.distance !== undefined) {
-          // Only add distance messages to the display
-          addMessage(event.data);
-          // Update background color based on RGB values
-          document.querySelector(
-            ".distance-display"
-          ).innerHTML = `<p>Distance: ${ data.distance } cm</p>`;
-        }
-      } catch (error) {
-        console.error("Error parsing message:", error);
-      }
     };
     // Connection state will be handled by WebSocket events
   } catch (error) {

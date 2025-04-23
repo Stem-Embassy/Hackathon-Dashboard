@@ -3,7 +3,7 @@
     :style="{ backgroundColor: currentColor }"
     class="color-changing-component"
   >
-    <p>Color Sensor</p>
+    <p>Color Changing Component</p>
   </div>
 </template>
 
@@ -11,8 +11,24 @@
 export default {
   data() {
     return {
-      currentColor: "#000000", // Black color
+      colors: ["#FF5733", "#33FF57", "#3357FF", "#FF33A6", "#FFD700"], // Array of colors to cycle through
+      currentColor: "#FF5733", // Initial color
+      colorIndex: 0, // To keep track of the current color index
     };
+  },
+  mounted() {
+    // Change color every 5 seconds
+    this.colorInterval = setInterval(this.changeColor, 5000);
+  },
+  beforeUnmount() {
+    clearInterval(this.colorInterval); // Clean up when the component is destroyed
+  },
+  methods: {
+    changeColor() {
+      // Increment color index and cycle back to 0 when it reaches the end of the array
+      this.colorIndex = (this.colorIndex + 1) % this.colors.length;
+      this.currentColor = this.colors[this.colorIndex];
+    },
   },
 };
 </script>
